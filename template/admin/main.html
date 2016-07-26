@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/css/admin.css" type="text/css">
+</head>
+<body>
+<div class="wrapper">
+    <div class="head">
+        <a href="?auth=logout" class="logout">Выход</a>
+        <h1>Blog admin</h1>
+    </div>
+    <div class="wr2">
+        <div class="menu">
+            {% for a,b in menu %}
+                {% if b == '-' %}
+                    <div class="line"></div>
+                {% else %}
+                    <a href="{{ a }}"{% if menu_active == a %} class="active"{% endif %}>{{ b }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="content">
+            {% block body %}
+
+            {% endblock %}
+        </div>
+    </div>
+    <div class="footer">
+        &copy; Админпанель
+    </div>
+</div>
+</body>
+
+</html>

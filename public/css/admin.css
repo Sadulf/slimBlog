@@ -1,0 +1,169 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+html,
+body {
+    height: 100%;
+}
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.wr2 {
+    flex: 1 0 auto;
+}
+.content{
+    margin: 10px 5px 20px 145px;
+    padding: 5px;
+}
+.footer {
+    flex: 0 0 auto;
+    padding: 5px;
+    clear: both;
+    height: 30px;
+    color: #CCC;
+    border-top: 1px solid #CCC;
+    vertical-align: middle;
+    text-align: right;
+    line-height: 30px;
+}
+
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+    color: #000;
+}
+h2 {
+    margin-top: 0;
+}
+.head {
+    padding: 10px;
+    border-bottom: 2px solid #CCCCCC;
+}
+.menu {
+    float: left;
+    border-right: 1px solid #CCC;
+    width: 120px;
+    padding: 5px;
+    margin: 10px 10px 20px 5px;
+}
+.menu a {
+    display: block;
+    padding: 2px;
+    margin: 2px;
+    font-size: 0.9em;
+    text-decoration: none;
+    border: 1px solid #FFF;
+}
+.menu a:hover {
+    background: #faf3d2;
+    border: 1px dashed #634f36;
+}
+.menu .active{
+    background: #ffd200;
+    border: 1px dashed #634f36;
+    font-weight: bold;
+}
+.line {
+    border-bottom: 1px groove #333;
+}
+
+
+.login{
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #CCC;
+    border-radius: 10px;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.login label{
+    width: 100px;
+    display: inline-block;
+}
+
+.login input{
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.login input[type="submit"]{
+    margin-left: 106px;
+}
+
+.message{
+    border: 1px solid #f00;
+    display: inline-block;
+    padding: 2px 10px 2px 10px;
+    background-color: #ffd5d5;
+    border-radius: 5px;
+}
+.message.info{
+    border: 1px solid #7689ff;
+    background-color: #f0faff;
+}
+
+.logout {
+    float: right;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #CCC;
+    border-radius: 10px;
+    display: inline-block;
+}
+.button{
+    background-color: #1a27a8;
+    padding: 4px 10px;
+    text-decoration: none;
+    color: #FFF;
+    border-radius: 5px;
+    border: 1px solid #0008bb;
+    margin: 5px;
+    display: inline-block;
+}
+.form-table td.title{
+    padding: 2px 10px;
+}
+.form-table td{
+    border-bottom: 1px solid #A0A0A0;
+    padding: 6px 6px 0 0;
+}
+.form-table input, .form-table textarea, .form-table select{
+    border: 1px dotted #CCC;
+    font-size:16px;
+    padding:2px;
+}
+.form-table input[type="submit"]{
+    padding: 5px;
+}
+
+.listing td, .listing th{
+    padding:4px;
+    border-right: 1px solid #CCC;
+    border-bottom: 1px solid #CCC;
+}
+label{
+    display:inline-block;
+    font-size:1.2em;
+    vertical-align: top;
+}
+label small{
+    font-size:0.6em;
+    color:#999;
+}
+input[type="text"],textarea {
+    font-size:1.2em;
+    margin-bottom:2px;
+    padding:2px 10px;
+
+}

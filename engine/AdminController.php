@@ -17,9 +17,12 @@ class AdminController
 
         // TODO
 
+        $out = [];
+        $out['menu'] = $this->getMenu();
+        $out['menu_active'] = '/admin/';
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+            ->write($this->ci->get('twig')->render('admin/index.html', $out));
     }
 
     public function indexPageAction($request, $response, $args)
@@ -72,6 +75,26 @@ class AdminController
             ->write('Not implemented yet...');
     }
 
+    public function staticAction($request, $response, $args)
+    {
+
+        // TODO
+
+        return $this->ci['response']
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Not implemented yet...');
+    }
+
+    public function staticPageAction($request, $response, $args)
+    {
+
+        // TODO
+
+        return $this->ci['response']
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Not implemented yet...');
+    }
+
     public function indexPageSaveAction($request, $response, $args)
     {
 
@@ -100,5 +123,21 @@ class AdminController
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
             ->write('Not implemented yet...');
+    }
+
+
+
+    /**
+     * Get menu for admin panel
+     */
+    public function getMenu()
+    {
+        $res = [];
+        $router = $this->ci->get('router');
+        foreach ($this->ci['routes'] as $name => $item)
+            if (isset($item['inMenu']) AND $item['inMenu'] == 'admin')
+                $res[$router->pathFor($name)] = $item['menuTitle'];
+
+        return $res;
     }
 }
