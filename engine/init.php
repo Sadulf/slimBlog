@@ -5,6 +5,7 @@ require __DIR__.'/../config.php';
 require __DIR__.'/../engine/models/db.php';
 require __DIR__.'/../engine/models/blog.php';
 require __DIR__.'/../engine/MainController.php';
+require __DIR__.'/../engine/AdminController.php';
 
 
 // init slim
@@ -67,6 +68,20 @@ $container['twig'] = new Twig_Environment(
 
 foreach($twig_functions as $name=>$func)
     $container['twig']->addFunction(new Twig_SimpleFunction($name,$func));
+
+
+// add admin routes
+
+$app->get('/admin/', '\AdminController:indexAction');
+$app->get('/admin/index/', '\AdminController:indexPageAction');
+$app->get('/admin/categories/', '\AdminController:categoriesAction');
+$app->get('/admin/category/{id}/', '\AdminController:categoryAction');
+$app->get('/admin/articles/', '\AdminController:articlesAction');
+$app->get('/admin/article/{id}/', '\AdminController:articleAction');
+
+$app->post('/admin/index/edit/', '\AdminController:indexPageSaveAction');
+$app->post('/admin/category/{id}/', '\AdminController:categorySaveAction');
+$app->post('/admin/article/{id}/', '\AdminController:articleSaveAction');
 
 
 // add blog routes
