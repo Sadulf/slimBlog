@@ -188,3 +188,7 @@ input[type="text"], textarea {
     border: 1px solid #7689ff;
     background-color: #f0faff;
 }
+
+.content ul {
+    margin-left: 20px;
+}

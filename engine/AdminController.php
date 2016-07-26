@@ -70,6 +70,8 @@ class AdminController
 
     public function categoryAction($request, $response, $args)
     {
+        // GET c=del
+        // POST
 
         // TODO
 
