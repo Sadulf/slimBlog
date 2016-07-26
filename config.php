@@ -1,7 +1,7 @@
 <?php
 
 $config = [
-    'siteURI'=>'http://slim.test',
+    'siteURI' => 'http://slim.test',
     'settings' => [
         'displayErrorDetails' => true,
         'determineRouteBeforeAppMiddleware' => true,
@@ -49,19 +49,19 @@ $config = [
             'needAuth' => true
         ],
         'AdminController:categoriesAction' => [
-            'path' => '/admin/categories/',
+            'path' => '/admin/categories/[page-{page}/]',
             'action' => '\AdminController:categoriesAction',
             'inMenu' => 'admin',
             'menuTitle' => 'Категории',
             'needAuth' => true
         ],
         'AdminController:categoryAction' => [
-            'path' => '/admin/category/{id}/',
+            'path' => '/admin/category/[{id}/]',
             'action' => '\AdminController:categoryAction',
             'needAuth' => true
         ],
         'AdminController:articlesAction' => [
-            'path' => '/admin/articles/',
+            'path' => '/admin/articles/[page-{page}/]',
             'action' => '\AdminController:articlesAction',
             'inMenu' => 'admin',
             'menuTitle' => 'Публикации',
@@ -73,7 +73,7 @@ $config = [
             'needAuth' => true
         ],
         'AdminController:staticAction' => [
-            'path' => '/admin/static/',
+            'path' => '/admin/static/[page-{page}/]',
             'action' => '\AdminController:staticAction',
             'inMenu' => 'admin',
             'menuTitle' => 'Статичные страницы',
@@ -84,25 +84,25 @@ $config = [
             'action' => '\AdminController:staticPageAction',
             'needAuth' => true
         ],
-/*
-        'AdminController:indexPageSaveAction' => [
-            'method' => 'POST',
-            'path' => '/admin/index/edit/',
-            'action' => '\AdminController:indexPageSaveAction',
-            'needAuth' => true
-        ],
-        'AdminController:categorySaveAction' => [
-            'method' => 'POST',
-            'path' => '/admin/category/{id}/',
-            'action' => '\AdminController:categorySaveAction',
-            'needAuth' => true
-        ],
-        'AdminController:articleSaveAction' => [
-            'method' => 'POST',
-            'path' => '/admin/article/{id}/',
-            'action' => '\AdminController:articleSaveAction',
-            'needAuth' => true
-        ],*/
+        /*
+                'AdminController:indexPageSaveAction' => [
+                    'method' => 'POST',
+                    'path' => '/admin/index/edit/',
+                    'action' => '\AdminController:indexPageSaveAction',
+                    'needAuth' => true
+                ],
+                'AdminController:categorySaveAction' => [
+                    'method' => 'POST',
+                    'path' => '/admin/category/{id}/',
+                    'action' => '\AdminController:categorySaveAction',
+                    'needAuth' => true
+                ],
+                'AdminController:articleSaveAction' => [
+                    'method' => 'POST',
+                    'path' => '/admin/article/{id}/',
+                    'action' => '\AdminController:articleSaveAction',
+                    'needAuth' => true
+                ],*/
 
         // blog routes
         'MainController:categoryAction' => [

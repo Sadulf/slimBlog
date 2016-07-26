@@ -1,0 +1,12 @@
+{% extends 'admin/main.html' %}
+
+{% block body %}
+<a href="{{ add_href }}" class="button">Добавить категорию </a>
+{% if data|length > 0 %}
+  <table>
+{% for item in data %}
+  <tr><td>{{ item.title }}</td><td><a href="{{ item.b_edit }}">Редактировать</a> | <a href="{{ item.b_delete }}">Удалить</a> | <a href="{{ item.b_articles }}">Публикации</a></td></tr>
+  {% endfor %}
+</table>
+  {% endif %}
+{% endblock %}
