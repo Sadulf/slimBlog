@@ -120,6 +120,7 @@ label{
     display:inline-block;
     font-size:1.2em;
     vertical-align: top;
+    width:150px;
 }
 label small{
     font-size:0.6em;
@@ -129,7 +130,7 @@ input[type="text"],textarea {
     font-size:1.2em;
     margin-bottom:2px;
     padding:2px 10px;
-
+    width: 550px;
 }
 
 .login{

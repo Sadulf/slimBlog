@@ -6,6 +6,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 class AdminController
 {
     protected $ci;
+    private $out;
 
     public function __construct($ci)
     {
@@ -14,34 +15,33 @@ class AdminController
 
     public function indexAction($request, $response, $args)
     {
-        global $_SESSION;
-
-        if(session_status() == PHP_SESSION_NONE)
-            session_start();
-
-        $out = [];
-        if(isset($_SESSION['message'])) {
-            $out['message'] = $_SESSION['message'];
-            unset($_SESSION['message']);
-        }
-        $out['menu'] = $this->getMenu();
-        $out['menu_active'] = $this->ci->get('router')->pathFor('AdminController:indexAction');
+        $this->preparer();
+        $this->out['menu_active'] = $this->ci->get('router')->pathFor('AdminController:indexAction');
 
         session_write_close();
 
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
-            ->write($this->ci->get('twig')->render('admin/index.html', $out));
+            ->write($this->ci->get('twig')->render('admin/index.html', $this->out));
     }
 
     public function indexPageAction($request, $response, $args)
     {
+        if($request->isPost())
+            return $this->indexPageSaveAction($request, $response, $args);
 
-        // TODO
+        $this->preparer();
+        $this->out['menu_active'] = $this->ci->get('router')->pathFor('AdminController:indexPageAction');
+
+        $model = new Admin($this->ci['db']);
+        $this->out['data'] = $model->getIndex();
+        $this->out['action'] = $this->ci->get('router')->pathFor('AdminController:indexPageAction');
+
+        session_write_close();
 
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+            ->write($this->ci->get('twig')->render('admin/indexPage.html', $this->out));
     }
 
     public function categoriesAction($request, $response, $args)
@@ -104,14 +104,45 @@ class AdminController
             ->write('Not implemented yet...');
     }
 
+
+    // POST UPDATE actions
+
+
     public function indexPageSaveAction($request, $response, $args)
     {
+        global $_SESSION;
+        if(session_status() == PHP_SESSION_NONE)
+            session_start();
+        $router = $this->ci->get('router');
+        $route = $request->getAttribute('route');
 
-        // TODO
+        $data = $request->getParsedBody();
+        $required_fields = [
+            'title'=>'text',
+            'text'=>'html',
+            'meta_title'=>'text',
+            'meta_description'=>'text',
+            'meta_keywords'=>'text'
+        ];
 
-        return $this->ci['response']
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+        $cleared_data = $this->testPostData($required_fields,$data);
+
+        if($cleared_data === false){
+            $_SESSION['message']='Invalid data!';
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName()));
+        }
+
+        $model = new Admin($this->ci['db']);
+        if($model->saveIndex($cleared_data) === false)
+            $_SESSION['message']='Error while saving your data!';
+        else
+            $_SESSION['message']='Saved.';
+
+        return $response
+            ->withStatus(301)
+            ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName()));
     }
 
     public function categorySaveAction($request, $response, $args)
@@ -132,6 +163,47 @@ class AdminController
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
             ->write('Not implemented yet...');
+    }
+
+    /** code executed for all actions in this controller
+     */
+    public function preparer(){
+        global $_SESSION;
+
+        if(session_status() == PHP_SESSION_NONE)
+            session_start();
+
+        $this->out = [];
+        if(isset($_SESSION['message'])) {
+            $this->out['message'] = $_SESSION['message'];
+            unset($_SESSION['message']);
+        }
+        $this->out['menu'] = $this->getMenu();
+    }
+
+    /** Tests POST data
+     * @param $required_fields array    field=>type
+     * @param $data array   array of POST data
+     * @return array    valid array of parameters or FALSE
+     */
+    private function testPostData($required_fields,$data){
+        $res = [];
+        foreach($required_fields as $name=>$type){
+            if(!isset($data[$name]))
+                return false;
+            switch ($type){
+                case 'text':
+                    $res[$name] = trim(strip_tags($data[$name]));
+                    break;
+                case 'html':
+                    $res[$name] = trim($data[$name]);
+                    break;
+                case 'int':
+                    $res[$name] = intval($data[$name]);
+                    break;
+            }
+        }
+        return $res;
     }
 
     /**

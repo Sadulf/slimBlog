@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Denis
  * Date: 26.07.2016
  * Time: 18:46
  */
-
 class AuthTest
 {
     protected $ci;
@@ -18,33 +18,33 @@ class AuthTest
     /**
      * AuthTest middleware invokable class
      *
-     * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
-     * @param  \Psr\Http\Message\ResponseInterface      $response PSR7 response
-     * @param  callable                                 $next     Next middleware
+     * @param  \Psr\Http\Message\ServerRequestInterface $request PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface $response PSR7 response
+     * @param  callable $next Next middleware
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function __invoke($request, $response, $next)
     {
-        global $_SESSION,$_SERVER;
+        global $_SESSION, $_SERVER;
 
         session_start();
 
-        $cmd=$request->getQueryParam('auth');
+        $cmd = $request->getQueryParam('auth');
 
         // is authorized?
-        if(isset($_SESSION['user']) AND isset($_SESSION['REMOTE_ADDR']) AND $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']){
+        if (isset($_SESSION['user']) AND isset($_SESSION['REMOTE_ADDR']) AND $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
             // authorized.
 
             // is logout command received ?
-            if($cmd == 'logout') {
+            if ($cmd == 'logout') {
 
                 // log out and redirect to client area
                 unset($_SESSION['user']);
                 session_write_close();
                 return $response
                     ->withStatus(301)
-                    ->withHeader('Location', $this->ci['siteURI'].'/');
+                    ->withHeader('Location', $this->ci['siteURI'] . '/');
             }
 
             // continue authorized operation
@@ -53,41 +53,41 @@ class AuthTest
 
         // not authorized
 
-        if(isset($_SESSION['user']))
+        if (isset($_SESSION['user']))
             unset($_SESSION['user']);
 
-        $out=[];
+        $out = [];
 
         // maybe authorization form is submitted ?
-        if($cmd == 'login' AND $request->isPost()) {
+        if ($cmd == 'login' AND $request->isPost()) {
             $data = $request->getParsedBody();
-            if(isset($data['name']) AND isset($data['pwd'])){
+            if (isset($data['name']) AND isset($data['pwd'])) {
                 $name = trim($data['name']);
-                if(isset($this->ci['users'][$name])){
+                if (isset($this->ci['users'][$name])) {
                     $pwd = trim($data['pwd']);
-                    if($this->ci['users'][$name] == $pwd){
+                    if ($this->ci['users'][$name] == $pwd) {
 
                         // success! Authorize this user
                         $_SESSION['user'] = $name;
                         $_SESSION['REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
 
                         // and redirect to typed url
-                        $_SESSION['message']='Hi, '.$_SESSION['user'].'!';
+                        $_SESSION['message'] = 'Hi, ' . $_SESSION['user'] . '!';
                         session_write_close();
 
                         $router = $this->ci->get('router');
                         $route = $request->getAttribute('route');
                         return $response
                             ->withStatus(301)
-                            ->withHeader('Location', $this->ci['siteURI'].$router->pathFor($route->getName()));
+                            ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName()));
 
-                    }else{
+                    } else {
                         $out['message'] = 'Password incorrect!';
                     }
-                }else{
+                } else {
                     $out['message'] = 'User does not exist!';
                 }
-            }else{
+            } else {
                 $out['message'] = 'Data transfer error!';
             }
         }

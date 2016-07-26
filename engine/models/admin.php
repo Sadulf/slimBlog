@@ -13,6 +13,10 @@ class Admin
     private static $link = null;
     private $perpage = 30;
 
+    private $_sqlGetIndexArticle = 'SELECT * FROM `articles` WHERE `type` = 3 LIMIT 1;';
+    private $_sqlUpdateIndexArticle = 'UPDATE `articles` SET :values WHERE `type` = 3;';
+
+
     /**
      * Constructor
      */
@@ -24,6 +28,43 @@ class Admin
         self::$link = $this;
         $this->_pdo = $_pdo;
     }
+
+    /**
+     * Get article for index page
+     */
+    public function getIndex()
+    {
+        $stm = $this->_pdo->prepare($this->_sqlGetIndexArticle);
+        $stm->execute();
+        return $stm->fetch();
+    }
+
+    public function saveIndex($data)
+    {
+        $stm = $this->_pdo->prepare(str_replace(':values',$this->pdoSet($data),$this->_sqlUpdateIndexArticle));
+        //echo $stm->interpolateQuery();die();
+        return $stm->execute();
+    }
+
+    /** Makes SET part of sql request. All data MUST be tested and prepared before!
+     * @param $data array   array of values
+     * @return string   SET part of SQL request
+     */
+    private function pdoSet($data){
+        $res = [];
+        foreach($data as $name=>$value){
+            if(is_numeric($value))
+                $res[] = '`'.$name.'` = '.$value;
+            else if(is_bool($value))
+                $res[] = '`'.$name.'` = '.($value?'true':'false');
+            else if(is_array($value))
+                $res[] = '`'.$name.'` = '.$this->_pdo->quote(serialize($value));
+            else // string
+                $res[] = '`'.$name.'` = '.$this->_pdo->quote($value);
+        }
+        return implode(', ',$res);
+    }
+
 
     private function calcPages($current, $count)
     {
