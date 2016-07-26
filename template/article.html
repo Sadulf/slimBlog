@@ -1,0 +1,11 @@
+{% extends 'main.html' %}
+
+{% block body %}
+	<div class="blog">
+		<h2>{{ title }}</h2>
+		{% if image != null %}
+			<img src="/uploads/{{ image }}" alt="">
+		{% endif %}
+		{{ text|raw }}
+	</div>
+{% endblock %}

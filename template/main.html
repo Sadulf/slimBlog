@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+{% block head %}
+	{% if meta_title != null %}
+		<title>{{ meta_title }}</title>
+	{% endif %}
+	{% if meta_keywords != null %}
+		<meta name="keywords" content="{{ meta_keywords }}">
+	{% endif %}
+	{% if meta_description != null %}
+		<meta name="description" content="{{ meta_description }}">
+	{% endif %}
+{% endblock %}
+	<link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+	<div class="border">
+		<div id="bg">
+			background
+		</div>
+		<div class="page">
+			<div class="sidebar">
+				<a href="index.html" id="logo"><img src="/images/logo.png" alt="logo"></a>
+				<ul>
+				{% for item in menu %}
+					<li{% if item.0 == menu_selected %} class="selected"{% endif %}>
+						<a href="{{ item.0 }}">{{ item.1 }}</a>
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+			<div class="body">
+			{% block body %}
+
+			{% endblock %}
+			</div>
+		</div>
+	</div>
+</body>
+</html>

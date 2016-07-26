@@ -1,0 +1,11 @@
+{% extends 'main.html' %}
+
+{% block body %}
+	<div>
+		<h2>Error {{ code }}</h2>
+		<p>
+			{{ message }}
+		</p>
+		<pre>{{ debug_data }}</pre>
+	</div>
+{% endblock %}
