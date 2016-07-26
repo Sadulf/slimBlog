@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Admin</title>
+    <title>Blog admin</title>
     <link rel="stylesheet" href="/css/admin.css" type="text/css">
 </head>
 <body>
@@ -22,6 +22,9 @@
             {% endfor %}
         </div>
         <div class="content">
+            {% if message is defined %}
+                <div class="message">{{ message }}</div><br>
+            {% endif %}
             {% block body %}
 
             {% endblock %}

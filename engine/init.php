@@ -7,6 +7,7 @@ require __DIR__ . '/../engine/models/blog.php';
 require __DIR__ . '/../engine/models/admin.php';
 require __DIR__ . '/../engine/MainController.php';
 require __DIR__ . '/../engine/AdminController.php';
+require __DIR__ . '/../engine/auth.php';
 
 
 // init slim
@@ -72,5 +73,8 @@ foreach ($twig_functions as $name => $func)
 
 
 // add routes
-foreach($config['routes'] as $name=>$item)
-    $app->map([$item['method']],$item['path'],$item['action'])->setName($name);
+foreach ($config['routes'] as $name => $item)
+    if (isset($item['needAuth']) AND $item['needAuth'])
+        $app->map(['GET','POST'], $item['path'], $item['action'])->setName($name)->add(new AuthTest($container));
+    else
+        $app->map([$item['method']], $item['path'], $item['action'])->setName($name);

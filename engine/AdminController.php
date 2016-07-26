@@ -14,12 +14,21 @@ class AdminController
 
     public function indexAction($request, $response, $args)
     {
+        global $_SESSION;
 
-        // TODO
+        if(session_status() == PHP_SESSION_NONE)
+            session_start();
 
         $out = [];
+        if(isset($_SESSION['message'])) {
+            $out['message'] = $_SESSION['message'];
+            unset($_SESSION['message']);
+        }
         $out['menu'] = $this->getMenu();
-        $out['menu_active'] = '/admin/';
+        $out['menu_active'] = $this->ci->get('router')->pathFor('AdminController:indexAction');
+
+        session_write_close();
+
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
             ->write($this->ci->get('twig')->render('admin/index.html', $out));
@@ -125,12 +134,10 @@ class AdminController
             ->write('Not implemented yet...');
     }
 
-
-
     /**
      * Get menu for admin panel
      */
-    public function getMenu()
+    private function getMenu()
     {
         $res = [];
         $router = $this->ci->get('router');
