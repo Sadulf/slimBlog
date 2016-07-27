@@ -1,12 +1,34 @@
 # Blog on Slim
-This is a simple blog CMS written in PHP using Slim micro framework and Twig template engine.
+This is a simple blog CMS written in PHP using Slim micro framework (http://www.slimframework.com/)
+and Twig template engine (http://twig.sensiolabs.org/).
 In this project I used the free html template from FINEMINDS.
 
-It`s not finished yet...
+This code is written in order to have a sample of my code. 
 
-#Issues
+###Disadvantages
 I deliberately left some things not done. Among them:
 1. Weak error control in operations in the admin panel;
 2. You can`t assign images to articles;
 
+###Live example
+An example of this engine installed can be seen here:
+http://phpbeginners.info/slim/
+http://phpbeginners.info/slim/admin/
 
+# По русски
+Это пример блоговой CMS, написанный на PHP с использованием 
+Slim micro framework (http://www.slimframework.com/)
+и Twig template engine (http://twig.sensiolabs.org/).
+Также, я использовал бесплатный HTML шаблон сайта от FINEMINDS.
+
+Этот движок написан ради того, чтобы можно было показать пример моего кода.
+
+###Недостатки
+Некоторые вещи я заведомо оставил не сделанными:
+1. Слабый контроль ошибок в админпанели;
+2. Невозможно привязать изображение к постам;
+
+###Живой пример
+Работающий пример этого движка можно увидеть здесь:
+http://phpbeginners.info/slim/
+http://phpbeginners.info/slim/admin/
