@@ -33,7 +33,7 @@ class AdminController
         $this->preparer();
         $this->out['menu_active'] = $this->ci->get('router')->pathFor('AdminController:indexPageAction');
 
-        $model = new Admin($this->ci['db']);
+        $model = new AdminIndex($this->ci['db']);
         $this->out['data'] = $model->getIndex();
         $this->out['action'] = $this->ci->get('router')->pathFor('AdminController:indexPageAction');
 
@@ -49,7 +49,7 @@ class AdminController
         $this->preparer();
         $router = $this->ci->get('router');
         $this->out['menu_active'] = $router->pathFor('AdminController:categoriesAction');
-        $model = new Admin($this->ci['db']);
+        $model = new AdminCategories($this->ci['db']);
         if (!isset($args['page']))
             $args['page'] = 0;
 
@@ -81,7 +81,7 @@ class AdminController
             global $_SESSION;
             if (session_status() == PHP_SESSION_NONE)
                 session_start();
-            $model = new Admin($this->ci['db']);
+            $model = new AdminCategories($this->ci['db']);
 
             $_SESSION['message'] = $model->categoryDelete($args['id']);
 
@@ -93,7 +93,7 @@ class AdminController
 
         $this->preparer();
         $this->out['menu_active'] = $router->pathFor('AdminController:categoriesAction');
-        $model = new Admin($this->ci['db']);
+        $model = new AdminCategories($this->ci['db']);
 
         if (isset($args['id'])) {
             // edit category $args['id']
@@ -117,7 +117,7 @@ class AdminController
         $category = $request->getQueryParam('cat');
         $router = $this->ci->get('router');
         $this->out['menu_active'] = $router->pathFor('AdminController:articlesAction');
-        $model = new Admin($this->ci['db']);
+        $model = new AdminArticles($this->ci['db']);
         if (!isset($args['page']))
             $args['page'] = 0;
 
@@ -148,7 +148,7 @@ class AdminController
             global $_SESSION;
             if (session_status() == PHP_SESSION_NONE)
                 session_start();
-            $model = new Admin($this->ci['db']);
+            $model = new AdminArticles($this->ci['db']);
 
             $_SESSION['message'] = $model->articleDelete($args['id']);
 
@@ -160,7 +160,7 @@ class AdminController
 
         $this->preparer();
         $this->out['menu_active'] = $router->pathFor('AdminController:articlesAction');
-        $model = new Admin($this->ci['db']);
+        $model = new AdminArticles($this->ci['db']);
 
         if (isset($args['id'])) {
             // edit category $args['id']
@@ -178,26 +178,6 @@ class AdminController
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
             ->write($this->ci->get('twig')->render('admin/article.html', $this->out));
-    }
-
-    public function staticAction($request, $response, $args)
-    {
-
-        // TODO
-
-        return $this->ci['response']
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
-    }
-
-    public function staticPageAction($request, $response, $args)
-    {
-
-        // TODO
-
-        return $this->ci['response']
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
     }
 
 
@@ -230,7 +210,7 @@ class AdminController
                 ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName()));
         }
 
-        $model = new Admin($this->ci['db']);
+        $model = new AdminIndex($this->ci['db']);
         if ($model->saveIndex($cleared_data) === false)
             $_SESSION['message'] = 'Error while saving your data!';
         else
@@ -270,7 +250,7 @@ class AdminController
         }
 
 
-        $model = new Admin($this->ci['db']);
+        $model = new AdminCategories($this->ci['db']);
         $id = isset($args['id'])?intval($args['id']):null;
         $r = $model->saveCategory($id,$cleared_data);
 
@@ -318,7 +298,7 @@ class AdminController
         if($cleared_data['parent'] == 0)
             unset($cleared_data['parent']);
 
-        $model = new Admin($this->ci['db']);
+        $model = new AdminArticles($this->ci['db']);
         $id = isset($args['id'])?intval($args['id']):null;
         $r = $model->saveArticle($id,$cleared_data);
 

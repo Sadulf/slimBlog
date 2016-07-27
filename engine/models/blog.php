@@ -94,7 +94,7 @@ class Blog
 
         $stm->execute();
         $res['posts'] = $stm->fetchAll();
-        foreach($res['posts'] as $k=>$v){
+        foreach ($res['posts'] as $k => $v) {
             $res['posts'][$k]['text'] = strip_tags($res['posts'][$k]['text']);
         }
 

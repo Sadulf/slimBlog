@@ -2,9 +2,15 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../config.php';
+require __DIR__ . '/routes.php';
 require __DIR__ . '/../engine/models/db.php';
 require __DIR__ . '/../engine/models/blog.php';
+
 require __DIR__ . '/../engine/models/admin.php';
+require __DIR__ . '/../engine/models/adminIndex.php';
+require __DIR__ . '/../engine/models/adminCategories.php';
+require __DIR__ . '/../engine/models/adminArticles.php';
+
 require __DIR__ . '/../engine/MainController.php';
 require __DIR__ . '/../engine/AdminController.php';
 require __DIR__ . '/../engine/auth.php';
@@ -26,7 +32,7 @@ db::setConfig(
 
 
 // add error handlers
-/*
+
 $container['notFoundHandler'] = function ($c) {
     return function ($request, $response) use ($c) {
         return \MainController::e404Action($c, $request, $response);
@@ -36,7 +42,7 @@ $container['errorHandler'] = function ($c) {
     return function ($request, $response, $exception) use ($c) {
         return \MainController::e500Action($c, $request, $response, $exception);
     };
-};*/
+};
 
 
 // add containers
@@ -75,6 +81,6 @@ foreach ($twig_functions as $name => $func)
 // add routes
 foreach ($config['routes'] as $name => $item)
     if (isset($item['needAuth']) AND $item['needAuth'])
-        $app->map(['GET','POST'], $item['path'], $item['action'])->setName($name)->add(new AuthTest($container));
+        $app->map(['GET', 'POST'], $item['path'], $item['action'])->setName($name)->add(new AuthTest($container));
     else
         $app->map([$item['method']], $item['path'], $item['action'])->setName($name);
