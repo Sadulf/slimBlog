@@ -1,0 +1,36 @@
+{% extends 'admin/main.html' %}
+
+{% block body %}
+    <form action="{{ action }}" method="post">
+        <label>Заголовок</label>
+        <input name="title" type="text" value="{{ data.title }}"/><br>
+        <label>URI</label>
+        <input name="uri" type="text" value="{{ data.uri }}"/><br>
+
+
+        <label>meta title</label>
+        <input name="meta_title" type="text" value="{{ data.meta_title }}"/><br>
+        <label>meta description</label>
+        <input name="meta_description" type="text" value="{{ data.meta_description }}"/><br>
+        <label>meta keywords</label>
+        <input name="meta_keywords" type="text" value="{{ data.meta_keywords }}"/><br>
+        <br>
+
+        <label>SEO Текст</label><br>
+        <textarea class="mce" style="height:300px;" name="text">{{ data.text }}</textarea>
+        <br>
+
+        <input class="button" type="submit" value="Сохранить"/>
+    </form>
+    <script src='/admin_js/tinymce/tinymce.min.js'></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea.mce',
+            language: 'ru',
+            toolbar: 'undo redo styleselect bold italic alignleft aligncenter alignright bullist numlist outdent indent code',
+            plugins: 'code',
+            menubar: false,
+            width: 726
+        });
+    </script>
+{% endblock %}

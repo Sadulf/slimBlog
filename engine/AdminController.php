@@ -70,14 +70,45 @@ class AdminController
 
     public function categoryAction($request, $response, $args)
     {
-        // GET c=del
-        // POST
+        if ($request->isPost())
+            return $this->categorySaveAction($request, $response, $args);
 
-        // TODO
+        $cmd = $request->getQueryParam('c');
+        $router = $this->ci->get('router');
 
+        if (isset($args['id']) AND $cmd == 'del') {
+            // delete category $args['id'], redirect to categoriesAction
+            global $_SESSION;
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            $model = new Admin($this->ci['db']);
+
+            $_SESSION['message'] = $model->categoryDelete($args['id']);
+
+            session_write_close();
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor('AdminController:categoriesAction'));
+        }
+
+        $this->preparer();
+        $this->out['menu_active'] = $router->pathFor('AdminController:categoriesAction');
+        $model = new Admin($this->ci['db']);
+
+        if (isset($args['id'])) {
+            // edit category $args['id']
+            $this->out['data'] = $model->categoryEdit($args['id']);
+            $this->out['action'] = $this->ci->get('router')->pathFor('AdminController:categoryAction', ['id' => $args['id']]);
+        } else {
+            // add category
+            $this->out['data'] = $model->categoryAdd();
+            $this->out['action'] = $this->ci->get('router')->pathFor('AdminController:categoryAction');
+        }
+
+        session_write_close();
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+            ->write($this->ci->get('twig')->render('admin/category.html', $this->out));
     }
 
     public function articlesAction($request, $response, $args)
@@ -163,12 +194,48 @@ class AdminController
 
     public function categorySaveAction($request, $response, $args)
     {
+        global $_SESSION;
 
-        // TODO
+        if (session_status() == PHP_SESSION_NONE)
+            session_start();
+        $router = $this->ci->get('router');
+        $route = $request->getAttribute('route');
 
-        return $this->ci['response']
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+        $data = $request->getParsedBody();
+        $required_fields = [
+            'title' => 'text',
+            'text' => 'html',
+            'uri' => 'text',
+            'meta_title' => 'text',
+            'meta_description' => 'text',
+            'meta_keywords' => 'text'
+        ];
+
+        $cleared_data = $this->testPostData($required_fields, $data);
+
+        if ($cleared_data === false) {
+            $_SESSION['message'] = 'Invalid data!';
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName(),$args));
+        }
+
+
+        $model = new Admin($this->ci['db']);
+        $id = isset($args['id'])?intval($args['id']):null;
+        $r = $model->saveCategory($id,$cleared_data);
+
+        if ($r !== true) {
+            $_SESSION['message'] = $r;
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName(),$args));
+        }else {
+            $_SESSION['message'] = 'Saved.';
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor('AdminController:categoriesAction'));
+        }
     }
 
     public function articleSaveAction($request, $response, $args)
