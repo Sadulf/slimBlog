@@ -113,12 +113,26 @@ class AdminController
 
     public function articlesAction($request, $response, $args)
     {
+        $this->preparer();
+        $category = $request->getQueryParam('cat');
+        $router = $this->ci->get('router');
+        $this->out['menu_active'] = $router->pathFor('AdminController:articlesAction');
+        $model = new Admin($this->ci['db']);
+        if (!isset($args['page']))
+            $args['page'] = 0;
 
-        // TODO
+        $this->out = array_merge($this->out, $model->getArticles($category,$args['page']));
+        $this->out['add_href'] = $router->pathFor('AdminController:articleAction');
+        $this->out['this_route'] = $router->pathFor('AdminController:articlesAction');
+        foreach ($this->out['data'] as $id => $item) {
+            $this->out['data'][$id]['b_edit'] = $router->pathFor('AdminController:articleAction', ['id' => $item['id']]);
+            $this->out['data'][$id]['b_delete'] = $router->pathFor('AdminController:articleAction', ['id' => $item['id']]) . '?c=del';
+        }
 
+        session_write_close();
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+            ->write($this->ci->get('twig')->render('admin/articles.html', $this->out));
     }
 
     public function articleAction($request, $response, $args)

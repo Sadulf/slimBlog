@@ -68,7 +68,7 @@ $config = [
             'needAuth' => true
         ],
         'AdminController:articleAction' => [
-            'path' => '/admin/article/{id}/',
+            'path' => '/admin/article/[{id}/]',
             'action' => '\AdminController:articleAction',
             'needAuth' => true
         ],

@@ -1,0 +1,33 @@
+{% extends 'admin/main.html' %}
+
+{% block body %}
+    <a href="{{ add_href }}" class="button">Добавить публикацию </a><br>
+    Категория: <a href="{{ this_route }}">Все</a>
+    {% for k,v in cats %}
+        | <a href="{{ this_route }}?cat={{ k }}">{{ v }}</a>
+    {% endfor %}
+    {% if data|length > 0 %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Title</th>
+                <th></th>
+
+            </tr>
+            {% for item in data %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ cats[item.parent] }}</td>
+                    <td>{{ item.title }}</td>
+                    <td>
+                        <small><a href="{{ item.b_edit }}">Редактировать</a> | <a href="{{ item.b_delete }}">Удалить</a></small>
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="message info">Нет ни одной публикации...</div><br>
+    {% endif %}
+{% endblock %}

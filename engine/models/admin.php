@@ -15,12 +15,23 @@ class Admin
 
     private $_sqlGetIndexArticle = 'SELECT * FROM `articles` WHERE `type` = 3 LIMIT 1;';
     private $_sqlUpdateIndexArticle = 'UPDATE `articles` SET :values WHERE `type` = 3;';
+
     private $_sqlGetCategoriesCnt = 'SELECT COUNT(*) AS \'count\' FROM `articles` WHERE `type` = 2;';
     private $_sqlGetCategories = 'SELECT `id`,`title` FROM `articles` WHERE `type` = 2 LIMIT ?,?;';
     private $_sqlDeleteCategory = 'UPDATE `articles` SET `parent`=0 WHERE `parent`=?; DELETE FROM `articles` WHERE `id` = ? LIMIT 1;';
     private $_sqlGetCategory = 'SELECT * FROM `articles` WHERE `type` = 2 AND `id`=? LIMIT 1;';
     private $_sqlUpdateCategory = 'UPDATE `articles` SET :values WHERE `type` = 2 AND `id`=?;';
     private $_sqlInsertCategory = 'INSERT INTO `articles` SET :values';
+
+    private $_sqlGetArticlesCnt = 'SELECT COUNT(*) AS \'count\' FROM `articles` WHERE `type` = 1;';
+    private $_sqlGetArticlesCatCnt = 'SELECT COUNT(*) AS \'count\' FROM `articles` WHERE `type` = 1 AND `parent`=?;';
+    private $_sqlGetArticles = 'SELECT `id`,`title` FROM `articles` WHERE `type` = 1 LIMIT ?,?;';
+    private $_sqlGetArticlesCat = 'SELECT `id`,`title` FROM `articles` WHERE `type` = 1 AND `parent`=:cat LIMIT :l1,:l2;';
+    private $_sqlGetArticlesCategories = 'SELECT `id`,`title` FROM `articles` WHERE `type` = 2;';
+    private $_sqlDeleteArticle = 'DELETE FROM `articles` WHERE `id` = ? LIMIT 1;';
+    private $_sqlGetArticle = 'SELECT * FROM `articles` WHERE `type` = 1 AND `id`=? LIMIT 1;';
+    private $_sqlUpdateArticle = 'UPDATE `articles` SET :values WHERE `type` = 1 AND `id`=?;';
+    private $_sqlInsertArticle = 'INSERT INTO `articles` SET :values';
 
 
     /**
@@ -44,6 +55,16 @@ class Admin
         $stm->execute();
         return $stm->fetch();
     }
+
+    public function saveIndex($data)
+    {
+        $stm = $this->_pdo->prepare(str_replace(':values', $this->pdoSet($data), $this->_sqlUpdateIndexArticle));
+        //echo $stm->interpolateQuery();die();
+        return $stm->execute();
+    }
+
+
+    // CATEGORIES OPERATIONS
 
     public function getCategories($page = 0)
     {
@@ -122,11 +143,102 @@ class Admin
 
     }
 
-    public function saveIndex($data)
+
+
+    // Articles OPERATIONS
+
+    public function getArticles($category=null, $page = 0)
     {
-        $stm = $this->_pdo->prepare(str_replace(':values', $this->pdoSet($data), $this->_sqlUpdateIndexArticle));
-        //echo $stm->interpolateQuery();die();
-        return $stm->execute();
+        // get articles count
+        if(is_null($category)) {
+            $stm = $this->_pdo->prepare($this->_sqlGetArticlesCnt);
+        }else{
+            $stm = $this->_pdo->prepare($this->_sqlGetArticlesCatCnt);
+            $stm->bindParam(1, $category, PDO::PARAM_INT);
+        }
+        $stm->execute();
+        $res['count'] = $stm->fetchColumn();
+        if ($res['count'] === false)
+            return $res;
+
+        // calculate pages
+        $res['pagination'] = $this->calcPages($page, $res['count']);
+
+        // get articles
+        $limit = [$res['pagination']['current'] * $this->perpage, $this->perpage];
+
+        if(is_null($category)) {
+            $stm = $this->_pdo->prepare($this->_sqlGetArticlesCat);
+            $stm->bindParam(':cat', $limit[0], PDO::PARAM_INT);
+        }else{
+            $stm = $this->_pdo->prepare($this->_sqlGetArticles);
+        }
+
+        $stm->bindParam(':l1', $limit[0], PDO::PARAM_INT);
+        $stm->bindParam(':l2', $limit[1], PDO::PARAM_INT);
+
+        // $stm->interpolateQuery();die();
+
+        $stm->execute();
+        $res['data'] = $stm->fetchAll();
+
+        // get categories list
+        $stm = $this->_pdo->prepare($this->_sqlGetArticlesCategories);
+        $stm->execute();
+        $res['cats'] = $stm->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        return $res;
+    }
+
+    public function articleDelete($id){
+        $stm = $this->_pdo->prepare($this->_sqlDeleteCategory);
+        $stm->bindParam(1, $id, PDO::PARAM_INT);
+        $stm->bindParam(2, $id, PDO::PARAM_INT);
+        if($stm->execute() === false)
+            return 'Произошла ошибка при удалении категории';
+        else
+            return 'Категория удалена';
+    }
+
+    public function articleEdit($id){
+        $stm = $this->_pdo->prepare($this->_sqlGetCategory);
+        $stm->bindParam(1, $id, PDO::PARAM_INT);
+        $stm->execute();
+        return  $stm->fetch();
+    }
+
+    public function articleAdd(){
+        return  [
+            'uri'=>'',
+            'title'=>'',
+            'meta_title'=>'',
+            'meta_description'=>'',
+            'meta_keywords'=>'',
+            'text'=>''
+        ];
+    }
+
+    public function saveArticle($id,$data){
+        $this->_pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
+        if(is_null($id)){
+            $data['published'] = time();
+            $data['type'] = 2;
+            $data['parent'] = 0;
+
+            $stm = $this->_pdo->prepare(str_replace(':values', $this->pdoSet($data), $this->_sqlInsertCategory));
+            $r = $stm->execute();
+        }else{
+            $stm = $this->_pdo->prepare(str_replace(':values', $this->pdoSet($data), $this->_sqlUpdateCategory));
+            $stm->bindParam(1, $id, PDO::PARAM_INT);
+            $r = $stm->execute();
+        }
+
+        if($r === false){
+            return $stm->errorInfo()[2];
+        }else{
+            return true;
+        }
+
     }
 
     /** Makes SET part of sql request. All data MUST be tested and prepared before!
