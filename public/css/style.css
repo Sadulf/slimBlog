@@ -532,9 +532,7 @@ a img {
 }
 
 .body .services ul li p {
-    float: right;
-    padding: 0 25px 0 0;
-    width: 400px;
+    padding: 0 25px 0 25px;
     margin: 20px 0;
     font-family: 'Conv_Muli-Regular';
     font-size: 13px;

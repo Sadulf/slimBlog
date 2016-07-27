@@ -10,7 +10,7 @@ class Blog
 
     private $_sqlGetCategory = "SELECT *, (SELECT COUNT(*) FROM `articles` b WHERE b.`type` = 1 AND b.`parent` = a.`id`) AS 'posts_count' FROM `articles` as a WHERE `uri` = ? AND `type` = 2 LIMIT 1;";
     private $_sqlGetCategoryPosts =
-        "SELECT `uri`, `title`, TRIM(LEFT(`text`,100)) AS `text`, `image` "
+        "SELECT `uri`, `title`, CONCAT(TRIM(LEFT(`text`,200)),'...') AS `text`"
         . "FROM `articles` WHERE `type` = 1 AND `parent` = ? LIMIT ?,?;";
 
     private $_sqlGetIndexArticle = 'SELECT * FROM `articles` WHERE `type` = 3 LIMIT 1;';
@@ -90,10 +90,13 @@ class Blog
         $stm->bindParam(2, $limit[0], PDO::PARAM_INT);
         $stm->bindParam(3, $limit[1], PDO::PARAM_INT);
 
-        // $stm->interpolateQuery();die();
+        // echo $stm->interpolateQuery();die();
 
         $stm->execute();
         $res['posts'] = $stm->fetchAll();
+        foreach($res['posts'] as $k=>$v){
+            $res['posts'][$k]['text'] = strip_tags($res['posts'][$k]['text']);
+        }
 
         return $res;
     }

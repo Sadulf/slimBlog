@@ -137,12 +137,47 @@ class AdminController
 
     public function articleAction($request, $response, $args)
     {
+        if ($request->isPost())
+            return $this->articleSaveAction($request, $response, $args);
 
-        // TODO
+        $cmd = $request->getQueryParam('c');
+        $router = $this->ci->get('router');
 
+        if (isset($args['id']) AND $cmd == 'del') {
+            // delete article $args['id'], redirect to articlesAction
+            global $_SESSION;
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            $model = new Admin($this->ci['db']);
+
+            $_SESSION['message'] = $model->articleDelete($args['id']);
+
+            session_write_close();
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor('AdminController:articlesAction'));
+        }
+
+        $this->preparer();
+        $this->out['menu_active'] = $router->pathFor('AdminController:articlesAction');
+        $model = new Admin($this->ci['db']);
+
+        if (isset($args['id'])) {
+            // edit category $args['id']
+            $this->out['data'] = $model->articleEdit($args['id']);
+            $this->out['action'] = $this->ci->get('router')->pathFor('AdminController:articleAction', ['id' => $args['id']]);
+        } else {
+            // add category
+            $this->out['data'] = $model->articleAdd();
+            $this->out['action'] = $this->ci->get('router')->pathFor('AdminController:articleAction');
+        }
+
+        $this->out['cats'] = $model->getCategoriesPairs();
+
+        session_write_close();
         return $this->ci['response']
             ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+            ->write($this->ci->get('twig')->render('admin/article.html', $this->out));
     }
 
     public function staticAction($request, $response, $args)
@@ -254,12 +289,50 @@ class AdminController
 
     public function articleSaveAction($request, $response, $args)
     {
+        global $_SESSION;
 
-        // TODO
+        if (session_status() == PHP_SESSION_NONE)
+            session_start();
+        $router = $this->ci->get('router');
+        $route = $request->getAttribute('route');
 
-        return $this->ci['response']
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Not implemented yet...');
+        $data = $request->getParsedBody();
+        $required_fields = [
+            'title' => 'text',
+            'text' => 'html',
+            'uri' => 'text',
+            'meta_title' => 'text',
+            'meta_description' => 'text',
+            'meta_keywords' => 'text',
+            'parent'=>'int'
+        ];
+
+        $cleared_data = $this->testPostData($required_fields, $data);
+
+        if ($cleared_data === false) {
+            $_SESSION['message'] = 'Invalid data!';
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName(),$args));
+        }
+        if($cleared_data['parent'] == 0)
+            unset($cleared_data['parent']);
+
+        $model = new Admin($this->ci['db']);
+        $id = isset($args['id'])?intval($args['id']):null;
+        $r = $model->saveArticle($id,$cleared_data);
+
+        if ($r !== true) {
+            $_SESSION['message'] = $r;
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor($route->getName(),$args));
+        }else {
+            $_SESSION['message'] = 'Saved.';
+            return $response
+                ->withStatus(301)
+                ->withHeader('Location', $this->ci['siteURI'] . $router->pathFor('AdminController:articlesAction'));
+        }
     }
 
     /** code executed for all actions in this controller

@@ -1,38 +1,33 @@
 {% extends 'main.html' %}
 
 {% block body %}
-	<div class="services">
-		<h2>{{ title }}</h2>
-		<br clear="both">
-		{% block pages %}
-			{% if pagination.pages|length > 0 %}
-				<div class="pages">
-					Страницы: 
-					{% for page,title in pagination.pages %}
-					<a href="/{{ uri }}/page-{{ page }}/"{% if page == pagination.current %} class="active"{% endif %}>{{ title }}</a>
-					{% endfor %}
-				</div>
-			{% endif %}
-		{% endblock %}
-		<ul>
-		{% for item in posts %}
-			<li>
-				<h3><span><a href="/{{ item.uri }}.html">{{ item.title }}</a></span></h3>
-				<div>
-				{% if item.image != null %}
-					<a href="/{{ item.uri }}.html"><img src="/uploads/{{ item.image }}" alt=""></a>
-				{% endif %}
-				</div>
-				{{ item.text|raw }}
-			</li>
-		{% endfor %}
-		</ul>
-		{{ block('pages') }}
-	</div>
-	<div class="blog">
-		{% if image != null %}
-			<img src="/uploads/{{ image }}" alt="">
-		{% endif %}
-		{{ text|raw }}
-	</div>
+    <div class="services">
+        <h2>{{ title }}</h2>
+        <br clear="both">
+        {% block pages %}
+            {% if pagination.pages|length > 0 %}
+                <div class="pages">
+                    Страницы:
+                    {% for page,title in pagination.pages %}
+                        <a href="/{{ uri }}/page-{{ page }}/"{% if page == pagination.current %} class="active"{% endif %}>{{ title }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endblock %}
+        <ul>
+            {% for item in posts %}
+                <li>
+                    <h3><span><a href="/{{ item.uri }}.html">{{ item.title }}</a></span></h3>
+                    <p>{{ item.text|raw }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+        {{ block('pages') }}
+    </div>
+    <div class="blog">
+        {% if image != null %}
+            <img src="/uploads/{{ image }}" alt="">
+        {% endif %}
+        {{ text|raw }}
+    </div>
 {% endblock %}
