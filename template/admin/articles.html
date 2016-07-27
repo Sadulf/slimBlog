@@ -7,6 +7,16 @@
         | <a href="{{ this_route }}?cat={{ k }}">{{ v }}</a>
     {% endfor %}
     {% if data|length > 0 %}
+        {% block pages %}
+            {% if pagination.pages|length > 0 %}
+                <div class="pages">
+                    Страницы:
+                    {% for page,title in pagination.pages %}
+                        <a href="{{ this_route }}page-{{ page }}/"{% if page == pagination.current %} class="active"{% endif %}>{{ title }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endblock %}
         <table>
             <tr>
                 <th>ID</th>
@@ -21,12 +31,14 @@
                     <td>{{ cats[item.parent] }}</td>
                     <td>{{ item.title }}</td>
                     <td>
-                        <small><a href="{{ item.b_edit }}">Редактировать</a> | <a href="{{ item.b_delete }}">Удалить</a></small>
+                        <small><a href="{{ item.b_edit }}">Редактировать</a> | <a href="{{ item.b_delete }}">Удалить</a>
+                        </small>
                     </td>
 
                 </tr>
             {% endfor %}
         </table>
+        {{ block('pages') }}
     {% else %}
         <div class="message info">Нет ни одной публикации...</div><br>
     {% endif %}

@@ -63,38 +63,4 @@ class MainController
             ->write($this->ci->get('twig')->render('article.html', $out));
     }
 
-
-    // error handlers
-
-    public static function e404Action($c, $request, $response)
-    {
-        $blog = new Blog($c['db']);
-        $out = [
-            'code' => '404',
-            'message' => 'Page not found',
-            'debug_data' => '',
-            'menu_selected' => '',
-            'menu' => $blog->getMenu()
-        ];
-
-        return $c['response']->withStatus(404)
-            ->withHeader('Content-Type', 'text/html')
-            ->write($c->get('twig')->render('error.html', $out));
-    }
-
-    public static function e500Action($c, $request, $response, $exception)
-    {
-        $blog = new Blog($c['db']);
-        $out = [
-            'code' => '500',
-            'message' => 'Internal server error',
-            'debug_data' => '',
-            'menu_selected' => '',
-            'menu' => $blog->getMenu()
-        ];
-
-        return $c['response']->withStatus(500)
-            ->withHeader('Content-Type', 'text/html')
-            ->write($c->get('twig')->render('error.html', $out));
-    }
 }

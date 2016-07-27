@@ -30,21 +30,6 @@ db::setConfig(
     $container['settings']['db']['pass']
 );
 
-
-// add error handlers
-
-$container['notFoundHandler'] = function ($c) {
-    return function ($request, $response) use ($c) {
-        return \MainController::e404Action($c, $request, $response);
-    };
-};
-$container['errorHandler'] = function ($c) {
-    return function ($request, $response, $exception) use ($c) {
-        return \MainController::e500Action($c, $request, $response, $exception);
-    };
-};
-
-
 // add containers
 
 $container['logger'] = function ($c) {
@@ -59,7 +44,6 @@ $container['db'] = function () {
     $pdo = db::getInstance();
     return $pdo->getConnection();
 };
-
 
 // configure twig
 

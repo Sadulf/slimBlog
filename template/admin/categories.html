@@ -3,6 +3,16 @@
 {% block body %}
     <a href="{{ add_href }}" class="button">Добавить категорию </a>
     {% if data|length > 0 %}
+        {% block pages %}
+            {% if pagination.pages|length > 0 %}
+                <div class="pages">
+                    Страницы:
+                    {% for page,title in pagination.pages %}
+                        <a href="{{ this_route }}page-{{ page }}/"{% if page == pagination.current %} class="active"{% endif %}>{{ title }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endblock %}
         <ul>
             {% for item in data %}
                 <li>{{ item.title }} &nbsp;
@@ -11,7 +21,8 @@
                 </li>
             {% endfor %}
         </ul>
-        {% else %}
-            <div class="message info">Нет ни одной категории...</div><br>
+        {{ block('pages') }}
+    {% else %}
+        <div class="message info">Нет ни одной категории...</div><br>
     {% endif %}
 {% endblock %}

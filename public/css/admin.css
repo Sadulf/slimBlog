@@ -199,3 +199,25 @@ table td, table th {
     padding: 5px;
     margin: 0;
 }
+
+.pages {
+    padding: 10px;
+}
+
+.pages a.active {
+    background-color: #b6b2ff;
+    font-weight: bold;
+    border-color: #000eff;
+}
+
+.pages a {
+    padding: 3px 5px;
+    border: 1px solid #CCC;
+    margin: 2px;
+    text-decoration: none;
+    color: #000;
+}
+
+.pages a:hover {
+    background-color: #b6b2ff;
+}
