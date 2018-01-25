@@ -10,11 +10,6 @@ I deliberately left some things not done. Among them:
 1. Weak error control in operations in the admin panel;
 2. You can`t assign images to articles;
 
-###Live example
-An example of this engine installed can be seen here:
-http://phpbeginners.info/slim/
-http://phpbeginners.info/slim/admin/
-
 # По русски
 Это пример блоговой CMS, написанный на PHP с использованием 
 Slim micro framework (http://www.slimframework.com/)
@@ -27,8 +22,3 @@ Slim micro framework (http://www.slimframework.com/)
 Некоторые вещи я заведомо оставил не сделанными:
 1. Слабый контроль ошибок в админпанели;
 2. Невозможно привязать изображение к постам;
-
-###Живой пример
-Работающий пример этого движка можно увидеть здесь:
-http://phpbeginners.info/slim/
-http://phpbeginners.info/slim/admin/
